@@ -8,7 +8,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from db import get_engine  # shared connection, dashboard/db.py
+from database import get_engine
 
 
 @st.cache_data
