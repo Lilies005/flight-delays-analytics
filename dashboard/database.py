@@ -1,23 +1,15 @@
-
 import os
-from pathlib import Path
-
+import pandas as pd
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, URL
+from sqlalchemy import create_engine
 
-# Charger le fichier .env situé à la racine du projet
-BASE_DIR = Path(__file__).resolve().parents[1]
-load_dotenv(BASE_DIR / ".env")
 
+load_dotenv()
 
 def get_engine():
-    connection_url = URL.create(
-        drivername="postgresql+psycopg2",
-        username=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
-        database=os.getenv("DB_NAME")
+    url = (
+        f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}"
+        f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
     )
+    return create_engine(url)
 
-    return create_engine(connection_url, pool_pre_ping=True)
