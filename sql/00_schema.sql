@@ -1,4 +1,4 @@
--- 00_setup_database.sql : cree les tables, puis charge les donnees
+-- 00_setup_database.sql : cree les tables
 -- A lancer depuis la RACINE du projet, sur une base vide :
 --   psql -d flights_db -f sql/00_setup_database.sql
 
