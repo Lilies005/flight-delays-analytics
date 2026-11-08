@@ -1,22 +1,23 @@
 
-import streamlit as st
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, URL
 
-@st.cache_resource
-def get_engine():
+# Charger le fichier .env situé à la racine du projet
+BASE_DIR = Path(__file__).resolve().parents[1]
+load_dotenv(BASE_DIR / ".env")
 
+
+def get_engine():
     connection_url = URL.create(
         drivername="postgresql+psycopg2",
-        username=st.secrets["postgres"]["username"],
-        password=st.secrets["postgres"]["password"],
-        host=st.secrets["postgres"]["host"],
-        port=st.secrets["postgres"]["port"],
-        database=st.secrets["postgres"]["database"]
+        username=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT"),
+        database=os.getenv("DB_NAME")
     )
 
-    engine = create_engine(
-        connection_url,
-        pool_pre_ping=True
-    )
-
-    return engine
+    return create_engine(connection_url, pool_pre_ping=True)
