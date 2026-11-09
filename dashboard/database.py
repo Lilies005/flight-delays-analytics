@@ -1,22 +1,13 @@
+import os
+import pandas as pd
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
 
-import streamlit as st
-from sqlalchemy import create_engine, URL
+load_dotenv()
 
-@st.cache_resource
 def get_engine():
-
-    connection_url = URL.create(
-        drivername="postgresql+psycopg2",
-        username=st.secrets["postgres"]["username"],
-        password=st.secrets["postgres"]["password"],
-        host=st.secrets["postgres"]["host"],
-        port=st.secrets["postgres"]["port"],
-        database=st.secrets["postgres"]["database"]
+    url = (
+        f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}"
+        f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
     )
-
-    engine = create_engine(
-        connection_url,
-        pool_pre_ping=True
-    )
-
-    return engine
+    return create_engine(url)
