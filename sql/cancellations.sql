@@ -1,10 +1,3 @@
--- =====================================================================
--- sql/cancellations.sql  |  Person 5: when and why are flights cancelled?
--- Rules: rate = cancelled / ALL scheduled flights; min 30 flights per group.
--- Open issue: cancelled flights have no delay values, so every average
--- delay excludes them (see v_cancel_delay_check).
--- Safe to rerun: drops only its own objects. Never modifies shared tables.
--- =====================================================================
 
 DROP VIEW IF EXISTS v_cancel_quality;
 DROP VIEW IF EXISTS v_cancel_delay_check;
@@ -210,7 +203,7 @@ SELECT COUNT(*)                                                     AS total_fli
 FROM flights;
 
 
--- Read (order is applied here, not in the views)
+
 -- SELECT * FROM v_cancel_by_airline  ORDER BY worst_rank;
 -- SELECT * FROM v_cancel_by_month    ORDER BY year, month;
 -- SELECT * FROM v_cancel_reasons     ORDER BY nb_cancelled DESC;
