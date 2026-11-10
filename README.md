@@ -13,6 +13,7 @@ Interactive dashboard analyzing flight delays in the United States, built with *
 - [Prerequisites](#prerequisites)
 - [Installation and Setup](#installation-and-setup)
 - [Run the Dashboard](#run-the-dashboard)
+- [Run the AI Comparison Dashboard](#run-the-ai-comparison-dashboard)
 - [Database Objects](#database-objects)
 - [Troubleshooting](#troubleshooting)
 - [Git Workflow](#git-workflow)
@@ -120,6 +121,9 @@ flight-delays/
         ├── cancellations.py     # cancellations analysis page
         ├── airports_routes.py  # Airports & routes analysis page 
 │       └── time_analysis.py  # Time analysis page
+│
+├── ai_comparison/
+│   └── ai_dashboard.py         # AI model comparison dashboard
 │
 ├── sql/
 │   ├── 00_schema.sql           # Tables and structure
@@ -238,6 +242,25 @@ streamlit run dashboard/app.py
 ```
 
 The app opens in your browser. Use the sidebar to navigate between pages.
+
+## Run the AI Comparison Dashboard
+
+The project also includes an AI comparison dashboard for exploring and comparing flight delay prediction models.
+
+From the project root, with the virtual environment activated, run the following commands on Windows (Command Prompt):
+
+```cmd
+set DB_USER=postgres
+set DB_NAME=flights_db
+set DB_PASSWORD=your_password
+python -m streamlit run ai_comparison\ai_dashboard.py
+```
+
+Replace `your_password` with your PostgreSQL password.
+
+The AI comparison dashboard will open in your browser.
+
+> **Note:** These environment variables are set only for the current terminal session. Make sure PostgreSQL is running and the required database is available before launching the dashboard.
 
 ## Database Objects
 
