@@ -1,4 +1,4 @@
-"""Person 3 - Time Analysis: when do delays happen most often? """
+"""Time Analysis: when do delays happen most often? """
 import numpy as np
 import pandas as pd
 import plotly.express as px

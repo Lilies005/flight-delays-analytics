@@ -1,12 +1,4 @@
--- =====================================================================
--- sql/time.sql  |  Person 3: when do flight delays happen most often?
--- Rules: delayed = arrival_delay >= 15
---        eligible = cancelled = 0 AND diverted = 0 AND arrival_delay IS NOT NULL
---        min 30 eligible flights per group (heatmap: 100)
--- Open issue (HHMM): scheduled_hour = (scheduled_departure / 100) % 24, so 2400 -> 0.
---   The hour is the SCHEDULED DEPARTURE hour; the delay is measured at ARRIVAL.
--- Safe to rerun: drops only its own objects. Never modifies shared tables.
--- =====================================================================
+
 
 DROP VIEW IF EXISTS v_time_quality;
 DROP VIEW IF EXISTS v_time_by_period;
@@ -212,7 +204,6 @@ SELECT COUNT(*)                                                         AS total
 FROM flights;
 
 
--- Read (order is applied here, not in the views)
 -- SELECT * FROM v_time_by_hour       ORDER BY hour_of_day;
 -- SELECT * FROM v_time_by_weekday    ORDER BY day_of_week;
 -- SELECT * FROM v_time_monthly_trend ORDER BY year, month;

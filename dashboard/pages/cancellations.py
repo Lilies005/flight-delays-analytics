@@ -1,9 +1,4 @@
-"""Person 5 - Cancellations: when and why are flights cancelled?
-
-Logic lives in SQL (sql/cancellations.sql). Two fine-grain views feed the
-sidebar filters; the analytic views are used for the airline ranking and the
-open-issue panel.
-"""
+"""Cancellations: when and why are flights cancelled?"""
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -221,7 +216,7 @@ st.caption("Table: all months, all airlines (from v_cancel_by_airline).")
 
 # ---------------------------------------------------------------- open issue
 st.divider()
-st.subheader("Open issue: cancelled flights and delay averages")
+st.subheader(" Cancelled flights and delay averages")
 q1, q2, q3, q4 = st.columns(4)
 q1.metric("Cancelled flights", f"{int(quality['cancelled_flights']):,}")
 q2.metric("With NULL arrival delay", f"{int(quality['cancelled_null_arrival_delay']):,}")
