@@ -48,11 +48,27 @@ Data is stored and prepared in PostgreSQL (tables, analytical views, indexes), t
 - Rich hover tooltips (city, state, eligible flights, delay rate, average arrival delay)
 - Expandable detailed data tables
 
+### Time Analysis
+- Overall delay rate and 95% confidence interval
+- Delay patterns by departure hour, weekday and month
+- Interactive heatmap and filters
+- Comparison of delay rates across periods of the day
+- Identification of the most and least affected time periods
+
+### Cancellations Analysis
+- Overall cancellation rate and monthly trends
+- Cancellation reasons and their monthly distribution
+- Cancellation rates by airline
+- Interactive airline and month filters
+- Key cancellation indicators and impact on arrival-delay averages
+- Recommendations based on the main cancellation patterns
+
 ## Dataset
 
 **2015 Flight Delays and Cancellations** (US Department of Transportation data, distributed on Kaggle). It contains flights, airlines and airports information for 2015.
 
 The dataset files are **not included** in the repository because of their size. Download them and place them at the paths expected by `sql/01_load_data.sql`.
+Time Analysis
 
 ## Methodology
 
@@ -61,6 +77,21 @@ The dataset files are **not included** in the repository because of their size. 
 - Flights with a **missing arrival delay** are excluded.
 - A minimum threshold of **30 eligible flights** is applied to airports and routes, to avoid misleading rates on small samples.
 - Delay rate (%) = delayed flights / eligible flights × 100.
+
+Time Analysis:
+
+-A flight is considered delayed when its arrival delay is 15 minutes or more.
+-Cancelled and diverted flights are excluded from delay calculations.
+-Groups with fewer than 30 eligible flights are excluded from comparative delay-rate analysis.
+-Wilson 95% confidence intervals are used to assess differences between groups.
+
+Cancellations Analysis:
+
+-Cancellation rate (%) = cancelled flights / all scheduled flights × 100.
+-Cancellation reasons are grouped into Airline, Air system (NAS), Weather, Security and Unknown.
+-A minimum threshold of 30 flights is applied to airline and monthly comparisons.
+-Cancellation shares based on fewer than 30 cancelled flights are displayed with a warning.
+-Cancelled and diverted flights are excluded from arrival-delay averages because their arrival-delay values are not representative of completed flights.
 
 ## Technologies Used
 
@@ -86,13 +117,18 @@ flight-delays/
 │   ├── database.py             # PostgreSQL connection (SQLAlchemy engine)
 │   └── pages/
 │       ├── airlines.py         # Airlines analysis page
-│       └── airports_routes.py  # Airports & routes analysis page
+        ├── cancellations.py     # cancellations analysis page
+        ├── airports_routes.py  # Airports & routes analysis page 
+│       └── time_analysis.py  # Time analysis page
 │
 ├── sql/
 │   ├── 00_schema.sql           # Tables and structure
 │   ├── 01_load_data.sql        # Dataset loading
 │   ├── airlines.sql            # Airlines views and indexes
+    ├── time.sql                # Time analysis views
+    ├── cancellations.sql       # Cancellations views and indexes 
 │   └── airports_routes.sql     # Airports & routes views and indexes
+
 │
 ├── .env.example                # Environment variables template
 ├── .gitignore
@@ -184,6 +220,9 @@ psql -U postgres -d flights_db -f "sql/01_load_data.sql"
 ```powershell
 psql -U postgres -d flights_db -f "sql/airlines.sql"
 psql -U postgres -d flights_db -f "sql/airports_routes.sql"
+psql -U postgres -d flights_db -f "sql/time.sql"
+psql -U postgres -d flights_db -f "sql/delay_causes.sql"
+psql -U postgres -d flights_db -f "sql/cancellations.sql"
 ```
 
 These scripts create the analytical views and indexes required by the dashboard.
@@ -209,6 +248,22 @@ Main views used by the Airports & Routes page:
 | `v_airports_routes_airport_delays` | Delay statistics per airport (eligible flights, delayed flights, delay rate, average arrival delay) |
 | `v_airports_routes_top_routes` | Ranked routes with the most delayed flights (`route_rank`) |
 
+Time Analysis
+| View | Description |
+v_time_cube|Aggregated flight statistics used for time-based analysis and filtering
+v_time_overall|Overall delay statistics
+v_time_by_hour|Delay statistics by scheduled departure hour
+v_time_by_weekday|Delay statistics by day of the week
+v_time_monthly_trend|Monthly flight delay trends
+v_time_by_period|Delay statistics by period of the day
+
+Cancellations Analysis
+
+| View | Description |
+v_cancel_airline_month|Flight and cancellation statistics by airline and month
+v_cancel_airline_month_reason|Monthly cancellation statistics grouped by cancellation reason
+v_cancel_by_airline|Cancellation performance and rankings by airline
+v_cancel_delay_check|Comparison of arrival-delay averages using correct and incorrect treatment of NULL values
 Query results are cached for 5 minutes in the dashboard (`st.cache_data(ttl=300)`).
 
 ## Troubleshooting
